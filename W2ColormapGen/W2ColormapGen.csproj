@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>AnyCPU;x86</Platforms>
+    </PropertyGroup>
+
+    <PropertyGroup>
+	    <NoWarn>$(NoWarn);WFO1000</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="Resources\W2ColormapGen.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="nulastudio.NetBeauty" Version="2.1.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+    <Reference Include="DW2Lib">
+        <HintPath>..\Libraries\DW2Lib.dll</HintPath>
+    </Reference>
+    <Reference Include="irrKlang.NET4">
+      <HintPath>..\Libraries\32bit\irrKlang.NET4.dll</HintPath>
+    </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Properties\Resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Resources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Properties\Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Resources\W2ColormapGen.png">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
+
+	<PropertyGroup>
+		<BeautySharedRuntimeMode>False</BeautySharedRuntimeMode>
+		<BeautyLibsDir Condition="$(BeautySharedRuntimeMode) == 'True'">../libraries</BeautyLibsDir>
+		<BeautyLibsDir Condition="$(BeautySharedRuntimeMode) != 'True'">./libraries</BeautyLibsDir>
+		<DisableBeauty>False</DisableBeauty>
+		<BeautyOnPublishOnly>False</BeautyOnPublishOnly>
+		<BeautyEnableDebugging>False</BeautyEnableDebugging>
+		<BeautyUsePatch>True</BeautyUsePatch>
+		<BeautyLogLevel>Info</BeautyLogLevel>
+		<Company>$(Authors)</Company>
+		<Version>1.0.0</Version>
+		<FileVersion>1.0.0</FileVersion>
+		<Authors>Dawid8</Authors>
+		<PackageIcon>W2ColormapGen.png</PackageIcon>
+		<Description></Description>
+		<Copyright>Copyright ©  2025 Dawid8</Copyright>
+		<IsPublishable>True</IsPublishable>
+		<AssemblyVersion>1.0.0</AssemblyVersion>
+		<ApplicationIcon>Resources\W2ColormapGen.ico</ApplicationIcon>
+	</PropertyGroup>
+
+</Project>

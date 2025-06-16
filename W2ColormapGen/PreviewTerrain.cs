@@ -18,6 +18,10 @@ namespace W2ColormapGen
         private int? draggingObjectIndex = null;
         private Point dragOffset;
 
+        Font font = new Font("Arial", 16);
+
+        bool showPositionIds = false;
+
         public PreviewTerrain(GameMap parameters, Bitmap map)
         {
             InitializeComponent();
@@ -34,6 +38,10 @@ namespace W2ColormapGen
             }
 
             waterBox.SetValueWithoutNotify(parameters.Water);
+
+            invisibleTerrainBox.Checked = parameters.InvisibleTerrain;
+            seedBox.Text = parameters.customSeed;
+            useSeedBox.Checked = parameters.useCustomSeed;
 
             backPanel.MouseWheel += BackPanel_MouseWheel;
 
@@ -165,8 +173,9 @@ namespace W2ColormapGen
 
         private void previewBox_Paint(object sender, PaintEventArgs e)
         {
-            foreach (var item in parameters.ObjectLocations)
+            for (int i = 0; i < parameters.ObjectLocations.Count; i++)
             {
+                Point item = parameters.ObjectLocations[i];
                 if (ResourcesManager.WormSprite != null)
                 {
                     e.Graphics.DrawImage(ResourcesManager.WormSprite, item.X - 8, item.Y - 8, 16, 16);
@@ -174,6 +183,40 @@ namespace W2ColormapGen
                 else
                 {
                     e.Graphics.FillEllipse(Brushes.Red, item.X - 8, item.Y - 8, 16, 16);
+                }
+
+                string text = $"{i}";
+                SizeF textSize = e.Graphics.MeasureString(text, font);
+
+                PointF drawPoint = new PointF(
+                    item.X - textSize.Width / 2,
+                    item.Y - textSize.Height / 2
+                );
+
+                if (showPositionIds)
+                {
+                    if (drawPoint.Y - 24 < 0)
+                    {
+                        drawPoint.Y += 24;
+                    }
+                    else
+                    {
+                        drawPoint.Y -= 24;
+                    }
+
+                    int borderSize = 1;
+                    for (int dx = -borderSize; dx <= borderSize; dx++)
+                    {
+                        for (int dy = -borderSize; dy <= borderSize; dy++)
+                        {
+                            if (dx != 0 || dy != 0)
+                            {
+                                e.Graphics.DrawString(text, font, Brushes.Black, drawPoint.X + dx, drawPoint.Y + dy);
+                            }
+                        }
+                    }
+
+                    e.Graphics.DrawString(text, font, Brushes.Red, drawPoint.X, drawPoint.Y);
                 }
             }
         }
@@ -230,7 +273,7 @@ namespace W2ColormapGen
 
             Task.Run(() =>
             {
-                parameters.ObjectLocations = ColorMapHelper.GenerateSpacedSpawnpoints(map, 18, 100, parameters.IndestructibleBorder ? 17 : 0);
+                parameters.ObjectLocations = ColorMapHelper.GenerateSpacedSpawnpoints(map, parameters.useCustomSeed ? parameters.customSeed : string.Empty, 18, 100, parameters.IndestructibleBorder ? 17 : 0);
 
                 if (parameters.ObjectLocations.Count != 18)
                 {
@@ -270,6 +313,68 @@ namespace W2ColormapGen
         private void styleBox_MouseLeave(object sender, EventArgs e)
         {
             SetText(string.Empty);
+        }
+
+        private void positionIdsBox_CheckedChanged(object sender, EventArgs e)
+        {
+            showPositionIds = positionIdsBox.Checked;
+            previewBox.Invalidate();
+        }
+
+        private void invisibleTerrainBox_CheckedChanged(object sender, EventArgs e)
+        {
+            parameters.InvisibleTerrain = invisibleTerrainBox.Checked;
+        }
+
+        private void positionIdsBox_MouseEnter(object sender, EventArgs e)
+        {
+            SetText("Choose whether to display the position IDs.");
+        }
+
+        private void positionIdsBox_MouseLeave(object sender, EventArgs e)
+        {
+            SetText(string.Empty);
+        }
+
+        private void invisibleTerrainBox_MouseEnter(object sender, EventArgs e)
+        {
+            SetText("Choose whether to make the terrain invisible when saving.");
+        }
+
+        private void invisibleTerrainBox_MouseLeave(object sender, EventArgs e)
+        {
+            SetText(string.Empty);
+        }
+
+        private void useSeedBox_MouseEnter(object sender, EventArgs e)
+        {
+            SetText("Choose whether to use a custom seed for position randomization.");
+        }
+
+        private void useSeedBox_MouseLeave(object sender, EventArgs e)
+        {
+            SetText(string.Empty);
+        }
+
+        private void seedBox_MouseEnter(object sender, EventArgs e)
+        {
+            SetText("Allows you to provide a custom seed to use for position randomization.");
+        }
+
+        private void seedBox_MouseLeave(object sender, EventArgs e)
+        {
+            SetText(string.Empty);
+        }
+
+        private void useSeedBox_CheckedChanged(object sender, EventArgs e)
+        {
+            seedBox.Enabled = useSeedBox.Checked;
+            parameters.useCustomSeed = useSeedBox.Checked;
+        }
+
+        private void seedBox_TextChanged(object sender, EventArgs e)
+        {
+            parameters.customSeed = seedBox.Text.Trim();
         }
     }
 }

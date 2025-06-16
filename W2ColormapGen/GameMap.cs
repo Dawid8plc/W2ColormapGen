@@ -11,6 +11,10 @@ namespace W2ColormapGen
         public List<Point> ObjectLocations = new List<Point>();
 
         public bool IndestructibleBorder = false;
+        public bool InvisibleTerrain = false;
+
+        public bool useCustomSeed = false;
+        public string customSeed = string.Empty;
 
         public GameMap() { }
     }

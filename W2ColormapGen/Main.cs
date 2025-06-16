@@ -164,7 +164,7 @@ namespace W2ColormapGen
 
             Task.Run(() =>
             {
-                currentMap.ObjectLocations = ColorMapHelper.GenerateSpacedSpawnpoints(currentMap.Image, 18, 100, currentMap.IndestructibleBorder ? 17 : 0);
+                currentMap.ObjectLocations = ColorMapHelper.GenerateSpacedSpawnpoints(currentMap.Image, currentMap.useCustomSeed ? currentMap.customSeed : string.Empty, 18, 100, currentMap.IndestructibleBorder ? 17 : 0);
 
                 if (currentMap.ObjectLocations.Count != 18)
                 {
@@ -365,7 +365,7 @@ namespace W2ColormapGen
             {
                 Directory.CreateDirectory(levelPath);
 
-                ColorMapHelper.CreateLandDat(currentMap.Image, finalPath, currentMap.PaletteSize, currentMap.ObjectLocations, currentMap.IndestructibleBorder, $".\\data\\water\\{terrainWaterBox.Text}");
+                ColorMapHelper.CreateLandDat(currentMap.Image, finalPath, currentMap.PaletteSize, currentMap.ObjectLocations, currentMap.IndestructibleBorder, $".\\data\\water\\{terrainWaterBox.Text}", currentMap.InvisibleTerrain);
 
                 MessageBox.Show($"Map has been saved to \"Levels\\Import\\Custom\\{nameBox.Text}.dat\"\nCan use the CTerrain tool to play on it!", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }

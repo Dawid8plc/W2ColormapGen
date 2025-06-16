@@ -33,6 +33,10 @@ namespace W2ColormapGen
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewTerrain));
             terrainSettingsGroup = new GroupBox();
+            useSeedBox = new FrontendCheckBox();
+            seedBox = new TextBox();
+            invisibleTerrainBox = new FrontendCheckBox();
+            positionIdsBox = new FrontendCheckBox();
             styleBox = new FrontendComboBox();
             label1 = new Label();
             closeBtn = new FrontendButton();
@@ -52,6 +56,10 @@ namespace W2ColormapGen
             // 
             // terrainSettingsGroup
             // 
+            terrainSettingsGroup.Controls.Add(useSeedBox);
+            terrainSettingsGroup.Controls.Add(seedBox);
+            terrainSettingsGroup.Controls.Add(invisibleTerrainBox);
+            terrainSettingsGroup.Controls.Add(positionIdsBox);
             terrainSettingsGroup.Controls.Add(styleBox);
             terrainSettingsGroup.Controls.Add(label1);
             terrainSettingsGroup.Controls.Add(closeBtn);
@@ -64,6 +72,59 @@ namespace W2ColormapGen
             terrainSettingsGroup.TabIndex = 0;
             terrainSettingsGroup.TabStop = false;
             terrainSettingsGroup.Text = "Map settings";
+            // 
+            // useSeedBox
+            // 
+            useSeedBox.AutoSize = true;
+            useSeedBox.Location = new Point(21, 66);
+            useSeedBox.Name = "useSeedBox";
+            useSeedBox.Size = new Size(115, 19);
+            useSeedBox.Sound = Managers.FrontendSounds.Impact;
+            useSeedBox.TabIndex = 12;
+            useSeedBox.Text = "Use custom seed";
+            useSeedBox.UseVisualStyleBackColor = true;
+            useSeedBox.CheckedChanged += useSeedBox_CheckedChanged;
+            useSeedBox.MouseEnter += useSeedBox_MouseEnter;
+            useSeedBox.MouseLeave += useSeedBox_MouseLeave;
+            // 
+            // seedBox
+            // 
+            seedBox.Enabled = false;
+            seedBox.Location = new Point(6, 86);
+            seedBox.Name = "seedBox";
+            seedBox.Size = new Size(141, 23);
+            seedBox.TabIndex = 11;
+            seedBox.TextChanged += seedBox_TextChanged;
+            seedBox.MouseEnter += seedBox_MouseEnter;
+            seedBox.MouseLeave += seedBox_MouseLeave;
+            // 
+            // invisibleTerrainBox
+            // 
+            invisibleTerrainBox.AutoSize = true;
+            invisibleTerrainBox.Location = new Point(154, 66);
+            invisibleTerrainBox.Name = "invisibleTerrainBox";
+            invisibleTerrainBox.Size = new Size(149, 19);
+            invisibleTerrainBox.Sound = Managers.FrontendSounds.Impact;
+            invisibleTerrainBox.TabIndex = 10;
+            invisibleTerrainBox.Text = "Invisible terrain on save";
+            invisibleTerrainBox.UseVisualStyleBackColor = true;
+            invisibleTerrainBox.CheckedChanged += invisibleTerrainBox_CheckedChanged;
+            invisibleTerrainBox.MouseEnter += invisibleTerrainBox_MouseEnter;
+            invisibleTerrainBox.MouseLeave += invisibleTerrainBox_MouseLeave;
+            // 
+            // positionIdsBox
+            // 
+            positionIdsBox.AutoSize = true;
+            positionIdsBox.Location = new Point(171, 91);
+            positionIdsBox.Name = "positionIdsBox";
+            positionIdsBox.Size = new Size(120, 19);
+            positionIdsBox.Sound = Managers.FrontendSounds.Impact;
+            positionIdsBox.TabIndex = 9;
+            positionIdsBox.Text = "Show position IDs";
+            positionIdsBox.UseVisualStyleBackColor = true;
+            positionIdsBox.CheckedChanged += positionIdsBox_CheckedChanged;
+            positionIdsBox.MouseEnter += positionIdsBox_MouseEnter;
+            positionIdsBox.MouseLeave += positionIdsBox_MouseLeave;
             // 
             // styleBox
             // 
@@ -227,5 +288,9 @@ namespace W2ColormapGen
         private System.Windows.Forms.PictureBox previewBox;
         private FrontendComboBox styleBox;
         private Label label1;
+        private FrontendCheckBox positionIdsBox;
+        private FrontendCheckBox invisibleTerrainBox;
+        private TextBox seedBox;
+        private FrontendCheckBox useSeedBox;
     }
 }

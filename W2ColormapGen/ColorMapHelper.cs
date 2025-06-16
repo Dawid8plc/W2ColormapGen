@@ -192,10 +192,14 @@ namespace W2ColormapGen
         /// <param name="minDistance">Minimum distance between spawn points.</param>
         /// <param name="minY">Minimum allowed Y value for spawn points (inclusive).</param>
         /// <returns>List of spawn points (Point).</returns>
-        public static List<Point> GenerateSpacedSpawnpoints(Bitmap bitmap, int numberOfSpawnPoints, int minDistance, int minY = 0)
+        public static List<Point> GenerateSpacedSpawnpoints(Bitmap bitmap, string seed, int numberOfSpawnPoints, int minDistance, int minY = 0)
         {
             List<Point> spawnPositions = new List<Point>();
-            Random rnd = Program.rnd;
+            Random rnd;
+            if (string.IsNullOrWhiteSpace(seed))
+                rnd = Program.rnd;
+            else
+                rnd = Program.GetRNG(seed);
             int minDistanceCurrent = minDistance;
             int minDistanceLowerBound = 0;
             double relaxFactor = 0.9; // Reduce minDistance by 10% each time

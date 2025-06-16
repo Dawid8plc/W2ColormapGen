@@ -1,4 +1,6 @@
 using Microsoft.Win32;
+using System.Security.Cryptography;
+using System.Text;
 using W2ColormapGen.Managers;
 
 namespace W2ColormapGen
@@ -62,6 +64,13 @@ namespace W2ColormapGen
             catch { }
 
             Application.Run(new Main());
+        }
+
+        public static Random GetRNG(string seed)
+        {
+            var algo = SHA1.Create();
+            var hash = BitConverter.ToInt32(algo.ComputeHash(Encoding.UTF8.GetBytes(seed)), 0);
+            return new Random(hash);
         }
 
         public static void ShowAbout(Form parent)

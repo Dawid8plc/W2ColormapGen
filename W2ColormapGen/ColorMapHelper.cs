@@ -6,23 +6,6 @@ using W2ColormapGen.Properties;
 
 namespace W2ColormapGen
 {
-    public enum SpawnType
-    {
-        Worm,
-        Mine
-    }
-
-    public struct SpawnPoint
-    {
-        public Point Position { get; set; }
-        public SpawnType Type { get; set; }
-        public SpawnPoint(Point position, SpawnType type)
-        {
-            Position = position;
-            Type = type;
-        }
-    }
-
     public class ColorMapHelper
     {
         static Random rnd = new Random();

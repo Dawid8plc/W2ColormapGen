@@ -20,6 +20,7 @@ Coming soon...
 + Separate sky gradient for color maps
 + Worm and mine spawn position customization (randomizable and draggable)
 + Indestructible border
++ Invisible terrain
 
 # Screenshots
 <img align="center" width="400" src="https://github.com/user-attachments/assets/fa66ea89-2ab7-40ef-8acb-4a01273971c0" />

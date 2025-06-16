@@ -24,4 +24,4 @@ Coming soon...
 # Screenshots
 <img align="center" width="400" src="https://github.com/user-attachments/assets/fa66ea89-2ab7-40ef-8acb-4a01273971c0" />
 <br/>
-<img align="center" width="600" src="https://github.com/user-attachments/assets/95d0a4e5-ae36-4f10-802c-9da143eaed6b" />
+<img align="center" width="600" src="https://github.com/user-attachments/assets/79cf3ca3-bcd4-4bce-9e45-f03b62405855" />

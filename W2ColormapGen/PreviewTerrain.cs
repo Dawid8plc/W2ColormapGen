@@ -43,6 +43,16 @@ namespace W2ColormapGen
             seedBox.Text = parameters.customSeed;
             useSeedBox.Checked = parameters.useCustomSeed;
 
+            fgCountLbl.Text = $"Foreground color count: {parameters.PaletteSize}";
+            bgCountLbl.Text = $"Background color count: {parameters.PaletteBGSize}";
+            mgCountLbl.Text = $"Merged color count: {parameters.PaletteMergedSize}";
+
+            if (parameters.Background == null)
+            {
+                showBackgroundBox.Enabled = false;
+                showBackgroundBox.Checked = false;
+            }
+
             backPanel.MouseWheel += BackPanel_MouseWheel;
 
             previewBox.Enabled = true;
@@ -273,7 +283,7 @@ namespace W2ColormapGen
 
             Task.Run(() =>
             {
-                parameters.ObjectLocations = ColorMapHelper.GenerateSpacedSpawnpoints(map, parameters.useCustomSeed ? parameters.customSeed : string.Empty, 18, 100, parameters.IndestructibleBorder ? 17 : 0);
+                parameters.ObjectLocations = ColorMapHelper.GenerateSpacedSpawnpoints(parameters.Image, parameters.useCustomSeed ? parameters.customSeed : string.Empty, 18, 100, parameters.IndestructibleBorder ? 17 : 0);
 
                 if (parameters.ObjectLocations.Count != 18)
                 {
@@ -375,6 +385,104 @@ namespace W2ColormapGen
         private void seedBox_TextChanged(object sender, EventArgs e)
         {
             parameters.customSeed = seedBox.Text.Trim();
+        }
+
+        private void showForegroundBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (showForegroundBox.Checked && showBackgroundBox.Checked)
+            {
+                previewBox.Image = parameters.Merged;
+                overviewBox.Image = parameters.Merged;
+            }
+            else if (showForegroundBox.Checked && !showBackgroundBox.Checked)
+            {
+                previewBox.Image = parameters.Image;
+                overviewBox.Image = parameters.Image;
+            }
+            else if (!showForegroundBox.Checked && !showBackgroundBox.Checked)
+            {
+                previewBox.Image = null;
+                overviewBox.Image = null;
+            }
+            else if (!showForegroundBox.Checked && showBackgroundBox.Checked)
+            {
+                previewBox.Image = parameters.Background;
+                overviewBox.Image = parameters.Background;
+            }
+        }
+
+        private void showBackgroundBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (showForegroundBox.Checked && showBackgroundBox.Checked)
+            {
+                previewBox.Image = parameters.Merged;
+                overviewBox.Image = parameters.Merged;
+            }
+            else if (showForegroundBox.Checked && !showBackgroundBox.Checked)
+            {
+                previewBox.Image = parameters.Image;
+                overviewBox.Image = parameters.Image;
+            }
+            else if (!showForegroundBox.Checked && !showBackgroundBox.Checked)
+            {
+                previewBox.Image = null;
+                overviewBox.Image = null;
+            }
+            else if (!showForegroundBox.Checked && showBackgroundBox.Checked)
+            {
+                previewBox.Image = parameters.Background;
+                overviewBox.Image = parameters.Background;
+            }
+        }
+
+        private void showForegroundBox_MouseEnter(object sender, EventArgs e)
+        {
+            SetText("Choose whether to display the foreground layer.");
+        }
+
+        private void showForegroundBox_MouseLeave(object sender, EventArgs e)
+        {
+            SetText(string.Empty);
+        }
+
+        private void showBackgroundBox_MouseEnter(object sender, EventArgs e)
+        {
+            SetText("Choose whether to display the background layer.");
+        }
+
+        private void showBackgroundBox_MouseLeave(object sender, EventArgs e)
+        {
+            SetText(string.Empty);
+        }
+
+        private void fgCountLbl_MouseEnter(object sender, EventArgs e)
+        {
+            SetText("Displays how many colors are in the foreground image's palette.");
+        }
+
+        private void fgCountLbl_MouseLeave(object sender, EventArgs e)
+        {
+            SetText(string.Empty);
+        }
+
+        private void bgCountLbl_MouseEnter(object sender, EventArgs e)
+        {
+            SetText("Displays how many colors are in the background image's palette.");
+        }
+
+        private void bgCountLbl_MouseLeave(object sender, EventArgs e)
+        {
+            SetText(string.Empty);
+        }
+
+        private void mgCountLbl_MouseEnter(object sender, EventArgs e)
+        {
+            SetText("Displays how many colors are in the merged image's palette. Duplicate colors found in the foreground and background are not counted twice.");
+        }
+
+        private void mgCountLbl_MouseLeave(object sender, EventArgs e)
+        {
+            SetText(string.Empty);
         }
     }
 }

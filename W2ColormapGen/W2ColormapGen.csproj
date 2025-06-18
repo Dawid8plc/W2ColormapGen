@@ -71,6 +71,7 @@
 		<IsPublishable>True</IsPublishable>
 		<AssemblyVersion>1.0.0</AssemblyVersion>
 		<ApplicationIcon>Resources\W2ColormapGen.ico</ApplicationIcon>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
 </Project>

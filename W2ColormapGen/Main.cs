@@ -69,6 +69,10 @@ namespace W2ColormapGen
                         if (currentMap != null)
                         {
                             currentMap.Image.Dispose();
+
+                            if(currentMap.Background != null)
+                                currentMap.Background.Dispose();
+
                             mapPreview.Image = null;
                         }
 
@@ -77,6 +81,8 @@ namespace W2ColormapGen
                         currentMap.Image = land.Foreground.ToBitmap(true);
 
                         pathBox.Text = path;
+                        pathBGBox.Text = string.Empty;
+                        browseBGBtn.Text = "Browse";
 
                         string waterName = land.WaterTheme.Substring(land.WaterTheme.LastIndexOf('\\') + 1);
 
@@ -113,6 +119,10 @@ namespace W2ColormapGen
                         if (currentMap != null)
                         {
                             currentMap.Image.Dispose();
+
+                            if (currentMap.Background != null)
+                                currentMap.Background.Dispose();
+
                             mapPreview.Image = null;
                         }
 
@@ -137,6 +147,8 @@ namespace W2ColormapGen
                         currentMap.Image = bitmap;
 
                         pathBox.Text = path;
+                        pathBGBox.Text = string.Empty;
+                        browseBGBtn.Text = "Browse";
 
                         currentMap.Water = terrainWaterBox.SelectedItem.ToString();
 
@@ -195,10 +207,38 @@ namespace W2ColormapGen
             {
                 if (currentMap.Image != null)
                     currentMap.Image.Dispose();
+                if (currentMap.Background != null)
+                    currentMap.Background.Dispose();
                 mapPreview.Image = null;
                 pathBox.Text = string.Empty;
+                pathBGBox.Text = string.Empty;
                 nameBox.Text = string.Empty;
                 currentMap = null;
+            }
+        }
+
+        void ResetBGState()
+        {
+            if (currentMap != null)
+            {
+                if (currentMap.Background != null)
+                {
+                    currentMap.Background.Dispose();
+                    currentMap.Background = null;
+                }
+
+                if (currentMap.Merged != null)
+                {
+                    currentMap.Merged.Dispose();
+                    currentMap.Merged = null;
+                }
+
+                pathBGBox.Text = string.Empty;
+                pathBGBox.Text = "Browse";
+
+                currentMap.PaletteBGSize = 0;
+                currentMap.PaletteMergedSize = 0;
+                mapPreview.Image = currentMap.Image;
             }
         }
 
@@ -365,7 +405,7 @@ namespace W2ColormapGen
             {
                 Directory.CreateDirectory(levelPath);
 
-                ColorMapHelper.CreateLandDat(currentMap.Image, finalPath, currentMap.PaletteSize, currentMap.ObjectLocations, currentMap.IndestructibleBorder, $".\\data\\water\\{terrainWaterBox.Text}", currentMap.InvisibleTerrain);
+                ColorMapHelper.CreateLandDat(currentMap.Image, currentMap.Merged == null ? currentMap.Image : currentMap.Merged, finalPath, currentMap.Merged == null ? currentMap.PaletteSize : currentMap.PaletteMergedSize, currentMap.ObjectLocations, currentMap.IndestructibleBorder, $".\\data\\water\\{terrainWaterBox.Text}", currentMap.InvisibleTerrain);
 
                 MessageBox.Show($"Map has been saved to \"Levels\\Import\\Custom\\{nameBox.Text}.dat\"\nCan use the CTerrain tool to play on it!", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -385,7 +425,7 @@ namespace W2ColormapGen
                     MessageBox.Show("Sky Gradient Theme for custom color maps applied!", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show($"Failed to apply Sky Gradient Theme.\n{ex.Message}", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -396,11 +436,11 @@ namespace W2ColormapGen
         {
             if (currentMap == null)
             {
-                MessageBox.Show("Please select an image to preview", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Please select an image to preview.", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            PreviewTerrain preview = new PreviewTerrain(currentMap, currentMap.Image);
+            PreviewTerrain preview = new PreviewTerrain(currentMap, (currentMap.Merged == null) ? currentMap.Image : currentMap.Merged);
             preview.ShowDialog();
 
             terrainWaterBox.SetValueWithoutNotify(currentMap.Water);
@@ -438,9 +478,133 @@ namespace W2ColormapGen
             }
             else
             {
-                if(MessageBox.Show("You don't seem to have the CTerrain tool installed in your game directory and it is required to play on color maps. Would you like to download it now?", "W2ColormapGen", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show("You don't seem to have the CTerrain tool installed in your game directory and it is required to play on color maps. Would you like to download it now?", "W2ColormapGen", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     Process.Start("explorer", "https://github.com/Carlmundo/CTerrain/releases");
+                }
+            }
+        }
+
+        private void browseBGBtn_Click(object sender, EventArgs e)
+        {
+            if (currentMap == null)
+            {
+                MessageBox.Show($"Please select the foreground image layer first.", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if(currentMap.Background != null)
+            {
+                currentMap.Background.Dispose();
+                currentMap.Background = null;
+
+                if (currentMap.Merged != null) 
+                {
+                    currentMap.Merged.Dispose();
+                    currentMap.Merged = null;
+                }
+
+                currentMap.PaletteMergedSize = 0;
+                currentMap.PaletteBGSize = 0;
+
+                pathBGBox.Text = string.Empty;
+                browseBGBtn.Text = "Browse";
+                mapPreview.Image = currentMap.Image;
+                return;
+            }
+
+            if (OFD.ShowDialog() == DialogResult.OK)
+            {
+                string path = OFD.FileName;
+
+                if (path.EndsWith(".dat"))
+                {
+                    try
+                    {
+                        Land land = new Land();
+                        land.Read(path);
+
+                        if (currentMap.Background != null)
+                        {
+                            currentMap.Background.Dispose();
+                        }
+
+                        if (currentMap.Merged != null)
+                        {
+                            currentMap.Merged.Dispose();
+                        }
+
+                        currentMap.Background = land.Foreground.ToBitmap(true);
+
+                        pathBGBox.Text = path;
+
+                        currentMap.PaletteBGSize = land.Foreground.Palette.Count;
+
+                        currentMap.Merged = ColorMapHelper.Merge8bppIndexed(currentMap.Image, currentMap.Background, out List<Color> palette);
+
+                        currentMap.PaletteMergedSize = palette.Count;
+
+                        mapPreview.Image = currentMap.Merged;
+
+                        browseBGBtn.Text = "Clear";
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to load land data.\n{ex.Message}", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                        ResetBGState();
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        if (currentMap.Background != null)
+                        {
+                            currentMap.Background.Dispose();
+                        }
+
+                        if (currentMap.Merged != null)
+                        {
+                            currentMap.Merged.Dispose();
+                        }
+
+                        Bitmap bitmap = new Bitmap(path);
+
+                        if (bitmap.Width != 1920 || bitmap.Height != 696)
+                        {
+                            MessageBox.Show($"Image isn't 1920x696.", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            ResetBGState();
+                            return;
+                        }
+
+                        if (bitmap.PixelFormat != System.Drawing.Imaging.PixelFormat.Format8bppIndexed)
+                        {
+                            MessageBox.Show($"Image format isn't 8 bits per pixel indexed.", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            ResetBGState();
+                            return;
+                        }
+
+                        currentMap.Background = bitmap;
+
+                        pathBGBox.Text = path;
+
+                        currentMap.PaletteBGSize = currentMap.Background.Palette.Entries.Length;
+
+                        currentMap.Merged = ColorMapHelper.Merge8bppIndexed(currentMap.Image, currentMap.Background, out List<Color> palette);
+
+                        currentMap.PaletteMergedSize = palette.Count;
+
+                        mapPreview.Image = currentMap.Merged;
+
+                        browseBGBtn.Text = "Clear";
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Failed to load image.\n{ex.Message}", "W2ColormapGen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                        ResetBGState();
+                    }
                 }
             }
         }

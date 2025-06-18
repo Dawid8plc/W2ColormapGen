@@ -40,6 +40,9 @@ namespace W2ColormapGen
             gradientPreview = new PictureBoxWithInterpolationMode();
             aboutBtn = new FrontendButton();
             dGroupBox2 = new DGroupBox();
+            label7 = new Label();
+            pathBGBox = new TextBox();
+            browseBGBtn = new FrontendButton();
             editBtn = new FrontendButton();
             label5 = new Label();
             label3 = new Label();
@@ -71,7 +74,7 @@ namespace W2ColormapGen
             dGroupBox1.Controls.Add(applyBtn);
             dGroupBox1.Controls.Add(terrainThemeBox);
             dGroupBox1.Controls.Add(gradientPreview);
-            dGroupBox1.Location = new Point(12, 335);
+            dGroupBox1.Location = new Point(12, 376);
             dGroupBox1.Name = "dGroupBox1";
             dGroupBox1.Size = new Size(622, 236);
             dGroupBox1.TabIndex = 2;
@@ -132,7 +135,8 @@ namespace W2ColormapGen
             // 
             // aboutBtn
             // 
-            aboutBtn.Location = new Point(559, 577);
+            aboutBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            aboutBtn.Location = new Point(559, 618);
             aboutBtn.Name = "aboutBtn";
             aboutBtn.Size = new Size(75, 23);
             aboutBtn.Sound = Managers.FrontendSounds.Click;
@@ -144,6 +148,9 @@ namespace W2ColormapGen
             // dGroupBox2
             // 
             dGroupBox2.BackColor = Color.Transparent;
+            dGroupBox2.Controls.Add(label7);
+            dGroupBox2.Controls.Add(pathBGBox);
+            dGroupBox2.Controls.Add(browseBGBtn);
             dGroupBox2.Controls.Add(editBtn);
             dGroupBox2.Controls.Add(label5);
             dGroupBox2.Controls.Add(label3);
@@ -157,14 +164,42 @@ namespace W2ColormapGen
             dGroupBox2.Controls.Add(mapPreview);
             dGroupBox2.Location = new Point(12, 12);
             dGroupBox2.Name = "dGroupBox2";
-            dGroupBox2.Size = new Size(622, 317);
+            dGroupBox2.Size = new Size(622, 358);
             dGroupBox2.TabIndex = 3;
             dGroupBox2.TabStop = false;
             dGroupBox2.Text = "Color Map Generator";
             // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(39, 199);
+            label7.Name = "label7";
+            label7.Size = new Size(99, 15);
+            label7.TabIndex = 12;
+            label7.Text = "Background layer";
+            // 
+            // pathBGBox
+            // 
+            pathBGBox.Location = new Point(144, 196);
+            pathBGBox.Name = "pathBGBox";
+            pathBGBox.ReadOnly = true;
+            pathBGBox.Size = new Size(338, 23);
+            pathBGBox.TabIndex = 10;
+            // 
+            // browseBGBtn
+            // 
+            browseBGBtn.Location = new Point(488, 195);
+            browseBGBtn.Name = "browseBGBtn";
+            browseBGBtn.Size = new Size(75, 23);
+            browseBGBtn.Sound = Managers.FrontendSounds.Click;
+            browseBGBtn.TabIndex = 11;
+            browseBGBtn.Text = "Browse";
+            browseBGBtn.UseVisualStyleBackColor = true;
+            browseBGBtn.Click += browseBGBtn_Click;
+            // 
             // editBtn
             // 
-            editBtn.Location = new Point(489, 196);
+            editBtn.Location = new Point(489, 225);
             editBtn.Name = "editBtn";
             editBtn.Size = new Size(75, 23);
             editBtn.Sound = Managers.FrontendSounds.Click;
@@ -176,9 +211,9 @@ namespace W2ColormapGen
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(91, 258);
+            label5.Location = new Point(81, 287);
             label5.Name = "label5";
-            label5.Size = new Size(438, 45);
+            label5.Size = new Size(438, 60);
             label5.TabIndex = 8;
             label5.Text = resources.GetString("label5.Text");
             label5.TextAlign = ContentAlignment.MiddleCenter;
@@ -186,7 +221,7 @@ namespace W2ColormapGen
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(68, 200);
+            label3.Location = new Point(73, 229);
             label3.Name = "label3";
             label3.Size = new Size(65, 15);
             label3.TabIndex = 7;
@@ -196,7 +231,7 @@ namespace W2ColormapGen
             // 
             terrainWaterBox.DropDownStyle = ComboBoxStyle.DropDownList;
             terrainWaterBox.FormattingEnabled = true;
-            terrainWaterBox.Location = new Point(145, 197);
+            terrainWaterBox.Location = new Point(144, 225);
             terrainWaterBox.Name = "terrainWaterBox";
             terrainWaterBox.Size = new Size(339, 23);
             terrainWaterBox.Sound = Managers.FrontendSounds.Impact;
@@ -206,7 +241,7 @@ namespace W2ColormapGen
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(69, 229);
+            label2.Location = new Point(74, 257);
             label2.Name = "label2";
             label2.Size = new Size(64, 15);
             label2.TabIndex = 5;
@@ -215,11 +250,11 @@ namespace W2ColormapGen
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(65, 169);
+            label1.Location = new Point(41, 170);
             label1.Name = "label1";
-            label1.Size = new Size(67, 15);
+            label1.Size = new Size(97, 15);
             label1.TabIndex = 4;
-            label1.Text = "Map image";
+            label1.Text = "Foreground layer";
             // 
             // pathBox
             // 
@@ -231,7 +266,7 @@ namespace W2ColormapGen
             // 
             // saveBtn
             // 
-            saveBtn.Location = new Point(490, 226);
+            saveBtn.Location = new Point(489, 255);
             saveBtn.Name = "saveBtn";
             saveBtn.Size = new Size(75, 23);
             saveBtn.Sound = Managers.FrontendSounds.Click;
@@ -242,7 +277,7 @@ namespace W2ColormapGen
             // 
             // nameBox
             // 
-            nameBox.Location = new Point(145, 226);
+            nameBox.Location = new Point(144, 254);
             nameBox.Name = "nameBox";
             nameBox.Size = new Size(339, 23);
             nameBox.TabIndex = 2;
@@ -272,7 +307,8 @@ namespace W2ColormapGen
             // 
             // discordBtn
             // 
-            discordBtn.Location = new Point(478, 577);
+            discordBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            discordBtn.Location = new Point(478, 618);
             discordBtn.Name = "discordBtn";
             discordBtn.Size = new Size(75, 23);
             discordBtn.Sound = Managers.FrontendSounds.Click;
@@ -283,7 +319,8 @@ namespace W2ColormapGen
             // 
             // CTerrainBtn
             // 
-            CTerrainBtn.Location = new Point(397, 577);
+            CTerrainBtn.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            CTerrainBtn.Location = new Point(397, 618);
             CTerrainBtn.Name = "CTerrainBtn";
             CTerrainBtn.Size = new Size(75, 23);
             CTerrainBtn.Sound = Managers.FrontendSounds.Click;
@@ -297,7 +334,7 @@ namespace W2ColormapGen
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImageLayout = ImageLayout.Stretch;
-            ClientSize = new Size(642, 611);
+            ClientSize = new Size(642, 648);
             Controls.Add(CTerrainBtn);
             Controls.Add(discordBtn);
             Controls.Add(aboutBtn);
@@ -342,5 +379,8 @@ namespace W2ColormapGen
         private FrontendButton aboutBtn;
         private FrontendButton discordBtn;
         private FrontendButton CTerrainBtn;
+        private Label label7;
+        private TextBox pathBGBox;
+        private FrontendButton browseBGBtn;
     }
 }

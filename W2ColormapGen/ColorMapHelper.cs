@@ -8,8 +8,6 @@ namespace W2ColormapGen
 {
     public class ColorMapHelper
     {
-        static Random rnd = new Random();
-
         public static bool CreateEmptyTheme(string theme)
         {
             if(!File.Exists(Path.Combine(Program.GamePath, @$"Data\LEVEL\{theme}\LEVEL.DIR")))
@@ -44,53 +42,71 @@ namespace W2ColormapGen
             return true;
         }
 
-        public static void CreateLandDat(Bitmap bitmap, string path, int paletteSize, List<Point> spawnPoints, bool indestructibleBorder, string WaterDir, bool invisibleTerrain = false)
+        public static void CreateLandDat(Bitmap CollisionBmp, Bitmap VisualBmp, string path, int paletteSize, List<Point> spawnPoints, bool indestructibleBorder, string WaterDir, bool invisibleTerrain = false)
         {
-            //Load palette
-            List<Color> pallete = new List<Color>();
-
-            for (int i = 0; i < paletteSize; i++)
-            {
-                Color item = bitmap.Palette.Entries[i];
-                pallete.Add(item);
-            }
-            //Load palette
-
             //Create foreground img
             Img img = new Img();
 
             img.BitsPerPixel = 8;
-            img.Size = new Size(bitmap.Width, bitmap.Height);
+            img.Size = new Size(CollisionBmp.Width, CollisionBmp.Height);
 
-            byte[] imageData;
+            byte[] CollisionData;
+            byte[] ForegroundData;
 
-            imageData = GetImageData(bitmap);
+            CollisionData = GetImageData(CollisionBmp);
+
+            List<Color> pallete = new List<Color>();
+
+            if (CollisionBmp == VisualBmp)
+            {
+                ForegroundData = CollisionData;
+            }
+            else
+            {
+                ForegroundData = GetImageData(VisualBmp);
+            }
+
+            //Load palette
+            for (int i = 0; i < paletteSize; i++)
+            {
+                Color item = VisualBmp.Palette.Entries[i];
+                pallete.Add(item);
+            }
+            //Load palette
 
             img.Palette = pallete;
             img.PaletteColorAmount = (short)(pallete.Count - 1);
 
             if (!invisibleTerrain)
             {
-                img.Data = imageData;
+                img.Data = ForegroundData;
             }
             else
             {
                 img.Data = new byte[1336320];
             }
-            img.Description = "\0";
+
+            if (CollisionBmp == VisualBmp)
+            {
+                img.Description = "\0";
+            }
+            else
+            {
+                img.Description = "DualLayer\0";
+            }
             //Create foreground img
 
             //Create land.dat
             Land data = new Land();
 
-            data.Size = new Size(bitmap.Width, bitmap.Height);
+            data.Size = new Size(CollisionBmp.Width, CollisionBmp.Height);
             data.IndestructibleBorder = indestructibleBorder;
 
             data.WaterTheme = WaterDir;
             data.LandTheme = $".\\W2ColormapGen\\Theme";
 
             data.Foreground = img;
-            data.CollisionMask = ConvertTo1bpp3(imageData, img.Size);
+            data.CollisionMask = ConvertTo1bpp3(CollisionData, img.Size);
             data.Background = data.CollisionMask;
             data.UnknownImage = GenerateEmptyImg();
 
@@ -102,6 +118,101 @@ namespace W2ColormapGen
 
             stream.Close();
             //Create land.dat
+        }
+
+        /// <summary>
+        /// Merges two 8bpp indexed images, merging palettes as needed. Foreground pixels that are not black are kept; black pixels are replaced by background, and background colors are added to the palette if needed.
+        /// </summary>
+        /// <param name="foreground">The foreground 8bpp indexed bitmap.</param>
+        /// <param name="background">The background 8bpp indexed bitmap.</param>
+        /// <returns>A new merged 8bpp indexed bitmap.</returns>
+        public static Bitmap Merge8bppIndexed(Bitmap foreground, Bitmap background, out List<Color> palette)
+        {
+            if (foreground.Width != background.Width || foreground.Height != background.Height)
+                throw new ArgumentException("Bitmaps must be the same size.");
+            if (foreground.PixelFormat != PixelFormat.Format8bppIndexed || background.PixelFormat != PixelFormat.Format8bppIndexed)
+                throw new ArgumentException("Both bitmaps must be 8bpp indexed.");
+
+            int width = foreground.Width;
+            int height = foreground.Height;
+            Bitmap result = new Bitmap(width, height, PixelFormat.Format8bppIndexed);
+
+            // Copy palette from foreground
+            ColorPalette fgPalette = foreground.Palette;
+            ColorPalette bgPalette = background.Palette;
+            ColorPalette resultPalette = result.Palette;
+            List<Color> paletteList = new List<Color>(fgPalette.Entries);
+            // Remove trailing empty palette entries
+            paletteList = paletteList.Where(c => c.A != 0 || (c.R != 0 || c.G != 0 || c.B != 0)).ToList();
+
+            // Map for fast color lookup
+            Dictionary<Color, byte> colorToIndex = new Dictionary<Color, byte>();
+            for (byte i = 0; i < paletteList.Count; i++)
+                if (!colorToIndex.ContainsKey(paletteList[i]))
+                    colorToIndex[paletteList[i]] = i;
+
+            BitmapData fgData = foreground.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);
+            BitmapData bgData = background.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format8bppIndexed);
+            BitmapData resData = result.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
+
+            try
+            {
+                int stride = fgData.Stride;
+                byte[] fgRow = new byte[stride];
+                byte[] bgRow = new byte[stride];
+                byte[] resRow = new byte[stride];
+                for (int y = 0; y < height; y++)
+                {
+                    System.Runtime.InteropServices.Marshal.Copy(fgData.Scan0 + y * stride, fgRow, 0, stride);
+                    System.Runtime.InteropServices.Marshal.Copy(bgData.Scan0 + y * stride, bgRow, 0, stride);
+                    for (int x = 0; x < width; x++)
+                    {
+                        byte fgIdx = fgRow[x];
+                        Color fgColor = fgPalette.Entries[fgIdx];
+                        if (fgColor.R != 0 || fgColor.G != 0 || fgColor.B != 0)
+                        {
+                            // Use foreground
+                            resRow[x] = fgIdx;
+                        }
+                        else
+                        {
+                            byte bgIdx = bgRow[x];
+                            Color bgColor = bgPalette.Entries[bgIdx];
+                            if (colorToIndex.TryGetValue(bgColor, out byte idx))
+                            {
+                                resRow[x] = idx;
+                            }
+                            else
+                            {
+                                if (paletteList.Count >= 256)
+                                    throw new InvalidOperationException("Palette would exceed 256 colors.");
+                                paletteList.Add(bgColor);
+                                byte newIdx = (byte)(paletteList.Count - 1);
+                                colorToIndex[bgColor] = newIdx;
+                                resRow[x] = newIdx;
+                            }
+                        }
+                    }
+                    System.Runtime.InteropServices.Marshal.Copy(resRow, 0, resData.Scan0 + y * stride, stride);
+                }
+            }
+            finally
+            {
+                foreground.UnlockBits(fgData);
+                background.UnlockBits(bgData);
+                result.UnlockBits(resData);
+            }
+            // Fill result palette
+            for (int i = 0; i < 256; i++)
+            {
+                if (i < paletteList.Count)
+                    resultPalette.Entries[i] = paletteList[i];
+                else
+                    resultPalette.Entries[i] = Color.Black;
+            }
+            result.Palette = resultPalette;
+            palette = paletteList;
+            return result;
         }
 
         public static Img GenerateEmptyImg()

@@ -47,11 +47,18 @@ namespace W2ColormapGen
             overviewBox = new MinimapPictureBox();
             backPanel = new Panel();
             previewBox = new PictureBox();
+            groupBox1 = new GroupBox();
+            mgCountLbl = new Label();
+            bgCountLbl = new Label();
+            fgCountLbl = new Label();
+            showBackgroundBox = new FrontendCheckBox();
+            showForegroundBox = new FrontendCheckBox();
             terrainSettingsGroup.SuspendLayout();
             groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)overviewBox).BeginInit();
             backPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)previewBox).BeginInit();
+            groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // terrainSettingsGroup
@@ -200,7 +207,7 @@ namespace W2ColormapGen
             // groupBox2
             // 
             groupBox2.Controls.Add(overviewBox);
-            groupBox2.Location = new Point(330, 12);
+            groupBox2.Location = new Point(504, 12);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(312, 147);
             groupBox2.TabIndex = 10;
@@ -229,7 +236,7 @@ namespace W2ColormapGen
             backPanel.Controls.Add(previewBox);
             backPanel.Location = new Point(12, 165);
             backPanel.Name = "backPanel";
-            backPanel.Size = new Size(776, 273);
+            backPanel.Size = new Size(801, 273);
             backPanel.TabIndex = 11;
             backPanel.Scroll += backPanel_Scroll;
             backPanel.MouseDown += backPanel_MouseDown;
@@ -249,11 +256,91 @@ namespace W2ColormapGen
             previewBox.TabStop = false;
             previewBox.Paint += previewBox_Paint;
             // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(mgCountLbl);
+            groupBox1.Controls.Add(bgCountLbl);
+            groupBox1.Controls.Add(fgCountLbl);
+            groupBox1.Controls.Add(showBackgroundBox);
+            groupBox1.Controls.Add(showForegroundBox);
+            groupBox1.Location = new Point(330, 12);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(168, 147);
+            groupBox1.TabIndex = 12;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Layers";
+            // 
+            // mgCountLbl
+            // 
+            mgCountLbl.AutoSize = true;
+            mgCountLbl.Location = new Point(6, 122);
+            mgCountLbl.Name = "mgCountLbl";
+            mgCountLbl.Size = new Size(124, 15);
+            mgCountLbl.TabIndex = 16;
+            mgCountLbl.Text = "Merged color count: 0";
+            mgCountLbl.MouseEnter += mgCountLbl_MouseEnter;
+            mgCountLbl.MouseLeave += mgCountLbl_MouseLeave;
+            // 
+            // bgCountLbl
+            // 
+            bgCountLbl.AutoSize = true;
+            bgCountLbl.Location = new Point(6, 100);
+            bgCountLbl.Name = "bgCountLbl";
+            bgCountLbl.Size = new Size(147, 15);
+            bgCountLbl.TabIndex = 15;
+            bgCountLbl.Text = "Background color count: 0";
+            bgCountLbl.MouseEnter += bgCountLbl_MouseEnter;
+            bgCountLbl.MouseLeave += bgCountLbl_MouseLeave;
+            // 
+            // fgCountLbl
+            // 
+            fgCountLbl.AutoSize = true;
+            fgCountLbl.Location = new Point(6, 78);
+            fgCountLbl.Name = "fgCountLbl";
+            fgCountLbl.Size = new Size(145, 15);
+            fgCountLbl.TabIndex = 14;
+            fgCountLbl.Text = "Foreground color count: 0";
+            fgCountLbl.MouseEnter += fgCountLbl_MouseEnter;
+            fgCountLbl.MouseLeave += fgCountLbl_MouseLeave;
+            // 
+            // showBackgroundBox
+            // 
+            showBackgroundBox.AutoSize = true;
+            showBackgroundBox.Checked = true;
+            showBackgroundBox.CheckState = CheckState.Checked;
+            showBackgroundBox.Location = new Point(10, 47);
+            showBackgroundBox.Name = "showBackgroundBox";
+            showBackgroundBox.Size = new Size(150, 19);
+            showBackgroundBox.Sound = Managers.FrontendSounds.Impact;
+            showBackgroundBox.TabIndex = 13;
+            showBackgroundBox.Text = "Show background layer";
+            showBackgroundBox.UseVisualStyleBackColor = true;
+            showBackgroundBox.CheckedChanged += showBackgroundBox_CheckedChanged;
+            showBackgroundBox.MouseEnter += showBackgroundBox_MouseEnter;
+            showBackgroundBox.MouseLeave += showBackgroundBox_MouseLeave;
+            // 
+            // showForegroundBox
+            // 
+            showForegroundBox.AutoSize = true;
+            showForegroundBox.Checked = true;
+            showForegroundBox.CheckState = CheckState.Checked;
+            showForegroundBox.Location = new Point(10, 22);
+            showForegroundBox.Name = "showForegroundBox";
+            showForegroundBox.Size = new Size(146, 19);
+            showForegroundBox.Sound = Managers.FrontendSounds.Impact;
+            showForegroundBox.TabIndex = 12;
+            showForegroundBox.Text = "Show foreground layer";
+            showForegroundBox.UseVisualStyleBackColor = true;
+            showForegroundBox.CheckedChanged += showForegroundBox_CheckedChanged;
+            showForegroundBox.MouseEnter += showForegroundBox_MouseEnter;
+            showForegroundBox.MouseLeave += showForegroundBox_MouseLeave;
+            // 
             // PreviewTerrain
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(825, 450);
+            Controls.Add(groupBox1);
             Controls.Add(backPanel);
             Controls.Add(groupBox2);
             Controls.Add(terrainSettingsGroup);
@@ -272,6 +359,8 @@ namespace W2ColormapGen
             ((System.ComponentModel.ISupportInitialize)overviewBox).EndInit();
             backPanel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)previewBox).EndInit();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -292,5 +381,11 @@ namespace W2ColormapGen
         private FrontendCheckBox invisibleTerrainBox;
         private TextBox seedBox;
         private FrontendCheckBox useSeedBox;
+        private GroupBox groupBox1;
+        private FrontendCheckBox showBackgroundBox;
+        private FrontendCheckBox showForegroundBox;
+        private Label mgCountLbl;
+        private Label bgCountLbl;
+        private Label fgCountLbl;
     }
 }

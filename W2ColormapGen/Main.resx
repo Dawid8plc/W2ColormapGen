@@ -123,7 +123,9 @@
   <data name="label5.Text" xml:space="preserve">
     <value>The only supported file format is 8bpp indexed BMP. All maps must be 1920x696.
 Worth keeping in mind that maps with too many colors might cause visual issues.
-It is also possible to open already generated color map dat files to modify them.</value>
+It is also possible to open already generated color map dat files to modify them.
+The map background layer is optional.
+</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

@@ -21,6 +21,7 @@ Coming soon...
 + Worm and mine spawn position customization (randomizable and draggable)
 + Indestructible border
 + Invisible terrain
++ Supports Dual Layer map creation (maps can have a background image layer that isn't collidable)
 
 # Screenshots
 <img align="center" width="400" src="https://github.com/user-attachments/assets/3b8056cf-0d73-4101-8b9d-ecbf8a5da04a" />

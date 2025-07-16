@@ -1,6 +1,7 @@
 ﻿using DW2Lib;
 using DW2Lib.Worms2;
 using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Text;
 using W2ColormapGen.Properties;
 
@@ -163,8 +164,8 @@ namespace W2ColormapGen
                 byte[] resRow = new byte[stride];
                 for (int y = 0; y < height; y++)
                 {
-                    System.Runtime.InteropServices.Marshal.Copy(fgData.Scan0 + y * stride, fgRow, 0, stride);
-                    System.Runtime.InteropServices.Marshal.Copy(bgData.Scan0 + y * stride, bgRow, 0, stride);
+                    Marshal.Copy(fgData.Scan0 + y * stride, fgRow, 0, stride);
+                    Marshal.Copy(bgData.Scan0 + y * stride, bgRow, 0, stride);
                     for (int x = 0; x < width; x++)
                     {
                         byte fgIdx = fgRow[x];
@@ -193,7 +194,7 @@ namespace W2ColormapGen
                             }
                         }
                     }
-                    System.Runtime.InteropServices.Marshal.Copy(resRow, 0, resData.Scan0 + y * stride, stride);
+                    Marshal.Copy(resRow, 0, resData.Scan0 + y * stride, stride);
                 }
             }
             finally
@@ -478,20 +479,25 @@ namespace W2ColormapGen
 
             try
             {
-                // Calculate the total size of the image data
-                int dataSize = bmpData.Stride * bitmap.Height;
+                int width = bitmap.Width;
+                int height = bitmap.Height;
+                int stride = bmpData.Stride;
 
-                // Create a byte array to hold the image data
-                byte[] imageData = new byte[dataSize];
+                byte[] pixelData = new byte[width * height];
+                byte[] rawData = new byte[stride * height];
 
-                // Copy the data from the bitmap to the byte array
-                System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, imageData, 0, dataSize);
+                Marshal.Copy(bmpData.Scan0, rawData, 0, rawData.Length);
 
-                return imageData;
+                // Copy only valid pixel bytes, row by row
+                for (int y = 0; y < height; y++)
+                {
+                    Buffer.BlockCopy(rawData, y * stride, pixelData, y * width, width);
+                }
+
+                return pixelData;
             }
             finally
             {
-                // Unlock the bits and release the bitmap
                 bitmap.UnlockBits(bmpData);
             }
         }

@@ -469,11 +469,11 @@ namespace W2ColormapGen
 
         private void CTerrainBtn_Click(object sender, EventArgs e)
         {
-            string CTerrainPath = Path.Combine(Program.GamePath, "CTerrain.exe");
+            string CTerrainPath = Path.Combine(Program.GamePath, "CTerrain", "CTerrain.exe");
             if (File.Exists(CTerrainPath))
             {
                 ProcessStartInfo psi = new ProcessStartInfo(CTerrainPath);
-                psi.WorkingDirectory = Program.GamePath;
+                psi.WorkingDirectory = Path.Combine(Program.GamePath, "CTerrain");
                 Process.Start(psi);
             }
             else
